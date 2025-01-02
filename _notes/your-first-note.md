@@ -38,7 +38,7 @@ Note: This behavior is disabled by default for privacy reasons. See "Site config
 
 You may include a tweet URL on its own line (like below), and it would be replaced with an official Twitter embed if the site configuration demands it.
 
-https://twitter.com/jack/status/20
+(https://x.com/jack/status/20
 
 ### Media embedding
 
