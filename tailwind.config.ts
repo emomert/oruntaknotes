@@ -83,9 +83,54 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        serif: ["var(--font-serif)"],
-        mono: ["var(--font-mono)"],
+        sans: ["Inter", "var(--font-sans)"],
+        serif: ["Georgia", "Charter", "var(--font-serif)"],
+        mono: ["JetBrains Mono", "var(--font-mono)"],
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "680px",
+            color: "hsl(var(--foreground))",
+            a: {
+              color: "hsl(var(--primary))",
+              textDecoration: "underline",
+              "&:hover": {
+                color: "hsl(var(--primary))",
+              },
+            },
+            "h1, h2, h3, h4": {
+              color: "hsl(var(--foreground))",
+              fontFamily: "Inter, sans-serif",
+            },
+            code: {
+              color: "hsl(var(--foreground))",
+              backgroundColor: "hsl(var(--muted))",
+              padding: "0.25rem 0.4rem",
+              borderRadius: "0.25rem",
+              fontWeight: "400",
+            },
+            "code::before": {
+              content: '""',
+            },
+            "code::after": {
+              content: '""',
+            },
+            pre: {
+              backgroundColor: "hsl(var(--muted))",
+              color: "hsl(var(--foreground))",
+            },
+            blockquote: {
+              borderLeftColor: "hsl(var(--primary))",
+              color: "hsl(var(--muted-foreground))",
+              fontStyle: "italic",
+            },
+            img: {
+              borderRadius: "0.5rem",
+              maxWidth: "100%",
+            },
+          },
+        },
       },
       keyframes: {
         "accordion-down": {
