@@ -3,8 +3,7 @@
   publish = "dist/public"
   functions = "netlify/functions"
 
-[[functions]]
-  name = "api"
+[functions]
   included_files = ["content/**/*", "uploads/**/*"]
 
 [[redirects]]
