@@ -3,6 +3,7 @@ import { useRoute, Link } from "wouter";
 import { Calendar, Clock, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { BlogPost } from "@shared/schema";
@@ -20,7 +21,7 @@ export default function BlogPostPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
+        <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-12 py-12">
           <div className="max-w-2xl mx-auto">
             <Skeleton className="h-10 w-32 mb-8" />
             <Skeleton className="h-12 w-full mb-4" />
@@ -42,9 +43,9 @@ export default function BlogPostPage() {
   if (!post) {
     return (
       <div className="min-h-screen">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
+        <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-12 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-3xl font-semibold mb-4" data-testid="text-not-found">
+            <h1 className="text-2xl font-semibold mb-4" data-testid="text-not-found">
               {t("Post not found", "Yazı bulunamadı")}
             </h1>
             <Link href="/">
@@ -61,21 +62,16 @@ export default function BlogPostPage() {
 
   const title = language === "tr" ? post.titleTr : post.titleEn;
   const content = language === "tr" ? post.contentTr : post.contentEn;
+  const tags = language === "tr" ? post.tagsTr ?? post.tags : post.tags;
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
+      <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-10 py-12">
         <div className="max-w-2xl mx-auto">
-          <Link href="/">
-            <Button variant="ghost" className="mb-8 -ml-4" data-testid="button-back">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("All posts", "Tüm yazılar")}
-            </Button>
-          </Link>
 
           <article>
             <h1
-              className="text-3xl md:text-5xl font-semibold mb-4 leading-tight"
+              className="text-2xl md:text-3xl font-semibold mb-4 leading-tight"
               data-testid="text-post-title"
             >
               {title}
@@ -101,10 +97,19 @@ export default function BlogPostPage() {
                   {post.readTimeMinutes} {t("min read", "dk okuma")}
                 </span>
               </div>
+              {tags && tags.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  {tags.slice(0, 2).map((tag) => (
+                    <Badge key={tag} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div data-testid="content-post">
-              <MarkdownRenderer content={content} />
+              <MarkdownRenderer content={content} enableFrames={false} />
             </div>
           </article>
         </div>

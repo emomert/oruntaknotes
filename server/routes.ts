@@ -95,6 +95,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/photos/:slug", async (req, res) => {
+    try {
+      const photo = await storage.getPhotoBySlug(req.params.slug);
+      if (!photo) {
+        return res.status(404).json({ error: "Photo not found" });
+      }
+      res.json(photo);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch photo" });
+    }
+  });
+
   app.post("/api/photos", async (req, res) => {
     try {
       const validatedData = insertPhotoSchema.parse(req.body);

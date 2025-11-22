@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 import {
   type BlogPost,
   type InsertBlogPost,
@@ -19,12 +22,18 @@ export interface IStorage {
   getProjectBySlug(slug: string): Promise<Project | undefined>;
   createProject(project: InsertProject): Promise<Project>;
 
+  getPhotoBySlug(slug: string): Promise<Photo | undefined>;
   getAllPhotos(): Promise<Photo[]>;
   createPhoto(photo: InsertPhoto): Promise<Photo>;
 
   getUploadedImageByFilename(filename: string): Promise<UploadedImage | undefined>;
   createUploadedImage(image: InsertUploadedImage): Promise<UploadedImage>;
 }
+
+type LoadedMarkdown = {
+  content: string;
+  meta: Record<string, unknown>;
+};
 
 export class MemStorage implements IStorage {
   private blogPosts: Map<string, BlogPost>;
@@ -41,109 +50,235 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    const samplePost: BlogPost = {
-      id: randomUUID(),
-      slug: "welcome-to-my-blog",
-      titleEn: "Welcome to My Blog",
-      titleTr: "Bloguma Hoş Geldiniz",
-      contentEn: `# Welcome!
+    this.seedUploadedImages();
+    this.seedBlogPosts();
+    this.seedProjects();
+    this.seedPhotos();
+  }
 
-This is a sample blog post to demonstrate the markdown rendering capabilities.
+  private seedUploadedImages() {
+    const uploadsDir = path.resolve(process.cwd(), "uploads");
+    let files: string[] = [];
+    try {
+      files = fs.readdirSync(uploadsDir);
+    } catch {
+      files = [];
+    }
 
-## Features
+    files
+      .filter((name) => !name.startsWith("."))
+      .forEach((filename) => {
+        this.seedUploadedImage({
+          filename,
+          url: `/uploads/${filename}`,
+        });
+      });
+  }
 
-- **Wiki-style links**: You can link to other posts using [[another-post]] syntax
-- **Image embedding**: Upload images using ![[image.jpg]] syntax
-- **Code blocks**: Share code snippets with syntax highlighting
+  private seedBlogPosts() {
+    const blogDir = path.resolve(process.cwd(), "content", "blog");
+    let files: string[] = [];
+    try {
+      files = fs.readdirSync(blogDir);
+    } catch {
+      files = [];
+    }
 
-\`\`\`javascript
-function greet(name) {
-  console.log(\`Hello, \${name}!\`);
-}
-\`\`\`
+    const enFiles = files.filter((f) => f.endsWith(".en.md"));
 
-> This is a blockquote. Use it for highlighting important information.
+    enFiles.forEach((file) => {
+      const slug = file.replace(/\.en\.md$/, "");
+      const enPath = path.join("content", "blog", file);
+      const trPath = path.join("content", "blog", `${slug}.tr.md`);
+      const hasTr = fs.existsSync(path.resolve(process.cwd(), trPath));
 
-## Getting Started
+      const en = this.loadMarkdownWithMeta(enPath);
+      const tr = this.loadMarkdownWithMeta(hasTr ? trPath : enPath);
 
-Start writing your content in markdown and see it beautifully rendered!`,
-      contentTr: `# Hoş Geldiniz!
+      const readTime = this.estimateReadTime(en.content || tr.content);
+      const publishedAt = this.parseDate(en.meta.publishedAt ?? tr.meta.publishedAt);
+      const tags = this.parseTags(en.meta.tags ?? en.meta.tagsEn);
+      const tagsTr = this.parseTags(tr.meta.tags ?? tr.meta.tagsTr ?? en.meta.tagsTr ?? tags);
 
-Bu, markdown render yeteneklerini göstermek için örnek bir blog yazısıdır.
+      const record: BlogPost = {
+        id: randomUUID(),
+        slug,
+        titleEn: String(en.meta.title ?? slug),
+        titleTr: String(tr.meta.title ?? en.meta.title ?? slug),
+        contentEn: en.content,
+        contentTr: tr.content,
+        excerptEn: String(en.meta.excerpt ?? ""),
+        excerptTr: String(tr.meta.excerpt ?? en.meta.excerpt ?? ""),
+        readTimeMinutes: readTime,
+        tags,
+        tagsTr,
+        publishedAt,
+      };
 
-## Özellikler
+      this.blogPosts.set(record.id, record);
+    });
+  }
 
-- **Wiki tarzı bağlantılar**: [[another-post]] sözdizimini kullanarak diğer yazılara bağlantı verebilirsiniz
-- **Görsel yerleştirme**: ![[image.jpg]] sözdizimini kullanarak görseller yükleyebilirsiniz
-- **Kod blokları**: Sözdizimi vurgulama ile kod parçacıkları paylaşabilirsiniz
+  private seedProjects() {
+    const projDir = path.resolve(process.cwd(), "content", "projects");
+    let files: string[] = [];
+    try {
+      files = fs.readdirSync(projDir);
+    } catch {
+      files = [];
+    }
 
-\`\`\`javascript
-function selamla(isim) {
-  console.log(\`Merhaba, \${isim}!\`);
-}
-\`\`\`
+    const enFiles = files.filter((f) => f.endsWith(".en.md"));
 
-> Bu bir alıntıdır. Önemli bilgileri vurgulamak için kullanın.
+    enFiles.forEach((file) => {
+      const slug = file.replace(/\.en\.md$/, "");
+      const enPath = path.join("content", "projects", file);
+      const trPath = path.join("content", "projects", `${slug}.tr.md`);
+      const hasTr = fs.existsSync(path.resolve(process.cwd(), trPath));
 
-## Başlarken
+      const en = this.loadMarkdownWithMeta(enPath);
+      const tr = this.loadMarkdownWithMeta(hasTr ? trPath : enPath);
 
-İçeriğinizi markdown ile yazmaya başlayın ve güzelce işlenmiş halini görün!`,
-      excerptEn: "A warm welcome to my personal blog where I share thoughts, stories, and ideas.",
-      excerptTr: "Düşüncelerimi, hikayelerimi ve fikirlerimi paylaştığım kişisel bloguma sıcak bir karşılama.",
-      readTimeMinutes: "3",
-      publishedAt: new Date("2025-01-15"),
-    };
+      const publishedAt = this.parseDate(en.meta.publishedAt ?? tr.meta.publishedAt);
+      const thumbnailUrl = String(
+        en.meta.thumbnailUrl ??
+          tr.meta.thumbnailUrl ??
+          "/uploads/atlas-notes-thumb.svg",
+      );
+      const projectUrl = (en.meta.projectUrl ?? tr.meta.projectUrl) ?? null;
 
-    this.blogPosts.set(samplePost.id, samplePost);
+      const record: Project = {
+        id: randomUUID(),
+        slug,
+        titleEn: String(en.meta.title ?? slug),
+        titleTr: String(tr.meta.title ?? en.meta.title ?? slug),
+        descriptionEn: String(en.meta.description ?? ""),
+        descriptionTr: String(tr.meta.description ?? ""),
+        contentEn: en.content,
+        contentTr: tr.content,
+        thumbnailUrl,
+        projectUrl: projectUrl ? String(projectUrl) : null,
+        publishedAt,
+      };
 
-    const sampleProject: Project = {
-      id: randomUUID(),
-      slug: "sample-project",
-      titleEn: "Sample Project",
-      titleTr: "Örnek Proje",
-      descriptionEn: "A showcase of what's possible with this platform",
-      descriptionTr: "Bu platformla neler yapılabileceğinin bir gösterimi",
-      contentEn: `## About This Project
+      this.projects.set(record.id, record);
+    });
+  }
 
-This is a sample project to demonstrate the project showcase functionality.
+  private seedPhotos() {
+    const photoDir = path.resolve(process.cwd(), "content", "photos");
+    let files: string[] = [];
+    try {
+      files = fs.readdirSync(photoDir);
+    } catch {
+      files = [];
+    }
 
-### Technologies Used
+    const enFiles = files.filter((f) => f.endsWith(".en.md"));
 
-- React
-- TypeScript
-- Tailwind CSS
+    enFiles.forEach((file) => {
+      const slug = file.replace(/\.en\.md$/, "");
+      const enPath = path.join("content", "photos", file);
+      const trPath = path.join("content", "photos", `${slug}.tr.md`);
+      const hasTr = fs.existsSync(path.resolve(process.cwd(), trPath));
 
-### Features
+      const en = this.loadMarkdownWithMeta(enPath);
+      const tr = this.loadMarkdownWithMeta(hasTr ? trPath : enPath);
 
-- Responsive design
-- Fast performance
-- Beautiful animations`,
-      contentTr: `## Proje Hakkında
+      const imageUrl = String(
+        en.meta.imageUrl ??
+          tr.meta.imageUrl ??
+          this.extractFirstImage(en.content) ??
+          this.extractFirstImage(tr.content) ??
+          "/uploads/winter-bosphorus.jpg",
+      );
+      const publishedAt = this.parseDate(en.meta.publishedAt ?? tr.meta.publishedAt ?? en.meta.date ?? tr.meta.date);
+      const takenAt = this.parseDate(
+        en.meta.takenAt ??
+        tr.meta.takenAt ??
+        en.meta.date ??
+        tr.meta.date ??
+        publishedAt
+      );
+      const captionEn = String(en.meta.caption ?? "");
+      const captionTr = String(tr.meta.caption ?? en.meta.caption ?? "");
 
-Bu, proje vitrin işlevselliğini göstermek için örnek bir projedir.
+      const record: Photo = {
+        id: randomUUID(),
+        slug,
+        titleEn: String(en.meta.title ?? slug),
+        titleTr: String(tr.meta.title ?? en.meta.title ?? slug),
+        captionEn,
+        captionTr,
+        imageUrl,
+        contentEn: en.content,
+        contentTr: tr.content,
+        takenAt,
+      };
 
-### Kullanılan Teknolojiler
+      this.photos.set(record.id, record);
+    });
+  }
 
-- React
-- TypeScript
-- Tailwind CSS
+  private seedUploadedImage(image: InsertUploadedImage) {
+    const id = randomUUID();
+    const record: UploadedImage = { ...image, id, uploadedAt: new Date() };
+    this.uploadedImages.set(id, record);
+  }
 
-### Özellikler
+  private loadMarkdownWithMeta(relativePath: string): LoadedMarkdown {
+    try {
+      const fullPath = path.resolve(process.cwd(), relativePath);
+      const raw = fs.readFileSync(fullPath, "utf8");
+      const { content, data } = matter(raw.replace(/\r\n/g, "\n"));
+      return { content: content.trim(), meta: data as Record<string, unknown> };
+    } catch (error) {
+      const message = (error as Error).message;
+      return {
+        content: `# Missing content\n\nContent file "${relativePath}" could not be loaded. (${message})`,
+        meta: {},
+      };
+    }
+  }
 
-- Duyarlı tasarım
-- Hızlı performans
-- Güzel animasyonlar`,
-      thumbnailUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=450&fit=crop",
-      projectUrl: null,
-      publishedAt: new Date("2025-01-10"),
-    };
+  private extractFirstImage(content: string): string | null {
+    const match = content.match(/!\[[^\]]*]\(([^)]+)\)/);
+    return match ? match[1] : null;
+  }
 
-    this.projects.set(sampleProject.id, sampleProject);
+  private parseDate(value: unknown): Date {
+    if (value instanceof Date) return value;
+    if (typeof value === "string" && value.trim().length > 0) {
+      const parsed = new Date(value);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed;
+      }
+    }
+    return new Date();
+  }
+
+  private parseTags(value: unknown): string[] {
+    if (Array.isArray(value)) {
+      return value.map((v) => String(v)).filter(Boolean);
+    }
+    if (typeof value === "string") {
+      return value
+        .split(",")
+        .map((v) => v.trim())
+        .filter((v) => v.length > 0);
+    }
+    return [];
+  }
+
+  private estimateReadTime(content: string): string {
+    const words = content.split(/\s+/).filter(Boolean).length;
+    const minutes = Math.max(1, Math.ceil(words / 200));
+    return String(minutes);
   }
 
   async getAllBlogPosts(): Promise<BlogPost[]> {
     return Array.from(this.blogPosts.values()).sort(
-      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
+      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime(),
     );
   }
 
@@ -153,21 +288,28 @@ Bu, proje vitrin işlevselliğini göstermek için örnek bir projedir.
 
   async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
     const id = randomUUID();
-    const post: BlogPost = { ...insertPost, id };
+    const readTime = insertPost.readTimeMinutes
+      ? String(insertPost.readTimeMinutes)
+      : this.estimateReadTime(insertPost.contentEn);
+    const post: BlogPost = {
+      ...insertPost,
+      readTimeMinutes: readTime,
+      tags: insertPost.tags ?? [],
+      tagsTr: (insertPost as any).tagsTr ?? [],
+      id,
+    };
     this.blogPosts.set(id, post);
     return post;
   }
 
   async getAllProjects(): Promise<Project[]> {
     return Array.from(this.projects.values()).sort(
-      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
+      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime(),
     );
   }
 
   async getProjectBySlug(slug: string): Promise<Project | undefined> {
-    return Array.from(this.projects.values()).find(
-      (project) => project.slug === slug
-    );
+    return Array.from(this.projects.values()).find((project) => project.slug === slug);
   }
 
   async createProject(insertProject: InsertProject): Promise<Project> {
@@ -179,8 +321,12 @@ Bu, proje vitrin işlevselliğini göstermek için örnek bir projedir.
 
   async getAllPhotos(): Promise<Photo[]> {
     return Array.from(this.photos.values()).sort(
-      (a, b) => b.takenAt.getTime() - a.takenAt.getTime()
+      (a, b) => b.takenAt.getTime() - a.takenAt.getTime(),
     );
+  }
+
+  async getPhotoBySlug(slug: string): Promise<Photo | undefined> {
+    return Array.from(this.photos.values()).find((photo) => photo.slug === slug);
   }
 
   async createPhoto(insertPhoto: InsertPhoto): Promise<Photo> {
@@ -192,7 +338,7 @@ Bu, proje vitrin işlevselliğini göstermek için örnek bir projedir.
 
   async getUploadedImageByFilename(filename: string): Promise<UploadedImage | undefined> {
     return Array.from(this.uploadedImages.values()).find(
-      (image) => image.filename === filename
+      (image) => image.filename === filename,
     );
   }
 

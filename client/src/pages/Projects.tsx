@@ -15,12 +15,12 @@ export default function Projects() {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-semibold mb-2" data-testid="text-page-title">
+      <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-10 py-12">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-2xl md:text-3xl font-semibold mb-2" data-testid="text-page-title">
             {t("Projects", "Projeler")}
           </h1>
-          <p className="text-muted-foreground mb-12">
+          <p className="text-muted-foreground mb-8">
             {t(
               "Things I've built and worked on",
               "Oluşturduğum ve üzerinde çalıştığım şeyler"
@@ -44,7 +44,7 @@ export default function Projects() {
 
           {!isLoading && projects && projects.length === 0 && (
             <div className="text-center py-16" data-testid="text-no-projects">
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-base">
                 {t("No projects yet", "Henüz proje yok")}
               </p>
             </div>
@@ -74,7 +74,7 @@ export default function Projects() {
                   </Link>
                   <CardContent className="p-6">
                     <Link href={`/projects/${project.slug}`}>
-                      <h2 className="text-xl md:text-2xl font-semibold mb-2 hover:text-primary transition-colors cursor-pointer">
+                      <h2 className="text-lg md:text-xl font-semibold mb-2 hover:text-primary transition-colors cursor-pointer">
                         {language === "tr" ? project.titleTr : project.titleEn}
                       </h2>
                     </Link>
@@ -106,3 +106,4 @@ export default function Projects() {
     </div>
   );
 }
+

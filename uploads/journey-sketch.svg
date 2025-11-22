@@ -1,0 +1,21 @@
+<svg width="840" height="520" viewBox="0 0 840 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="journeyGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0EA5E9" offset="0%"/>
+      <stop stop-color="#8B5CF6" offset="100%"/>
+    </linearGradient>
+  </defs>
+  <rect width="840" height="520" rx="32" fill="#0F172A"/>
+  <rect x="24" y="24" width="792" height="472" rx="24" fill="#111827" stroke="#1F2937" stroke-width="2"/>
+  <path d="M80 360 C160 280 240 300 320 220 C380 160 460 140 520 200 C560 240 620 230 700 160" stroke="url(#journeyGradient)" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <circle cx="80" cy="360" r="10" fill="#0EA5E9"/>
+  <circle cx="320" cy="220" r="10" fill="#22D3EE"/>
+  <circle cx="520" cy="200" r="10" fill="#A855F7"/>
+  <circle cx="700" cy="160" r="10" fill="#F472B6"/>
+  <text x="100" y="390" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">Start</text>
+  <text x="300" y="250" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">Draft</text>
+  <text x="500" y="230" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">Review</text>
+  <text x="680" y="190" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">Publish</text>
+  <rect x="120" y="96" width="600" height="72" rx="16" fill="#0B1220" stroke="#1F2937" stroke-width="2"/>
+  <text x="144" y="140" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">Markdown-first journey map</text>
+</svg>

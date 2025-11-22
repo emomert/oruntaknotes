@@ -14,12 +14,22 @@ export const blogPosts = pgTable("blog_posts", {
   excerptEn: text("excerpt_en").notNull(),
   excerptTr: text("excerpt_tr").notNull(),
   readTimeMinutes: text("read_time_minutes").notNull(),
+  tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
+  tagsTr: text("tags_tr").array().notNull().default(sql`ARRAY[]::text[]`),
   publishedAt: timestamp("published_at").notNull(),
 });
 
-export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
-  id: true,
-});
+export const insertBlogPostSchema = createInsertSchema(blogPosts)
+  .omit({
+    id: true,
+    readTimeMinutes: true,
+    tagsTr: true,
+  })
+  .extend({
+    readTimeMinutes: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    tagsTr: z.array(z.string()).default([]),
+  });
 
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 export type BlogPost = typeof blogPosts.$inferSelect;
@@ -49,9 +59,14 @@ export type Project = typeof projects.$inferSelect;
 // Photos
 export const photos = pgTable("photos", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  slug: text("slug").notNull().unique(),
+  titleEn: text("title_en").notNull(),
+  titleTr: text("title_tr").notNull(),
   captionEn: text("caption_en"),
   captionTr: text("caption_tr"),
   imageUrl: text("image_url").notNull(),
+  contentEn: text("content_en").notNull(),
+  contentTr: text("content_tr").notNull(),
   takenAt: timestamp("taken_at").notNull(),
 });
 

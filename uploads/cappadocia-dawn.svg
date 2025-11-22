@@ -1,0 +1,27 @@
+<svg width="840" height="520" viewBox="0 0 840 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FDE68A" offset="0%"/>
+      <stop stop-color="#FCA5A5" offset="60%"/>
+      <stop stop-color="#0F172A" offset="100%"/>
+    </linearGradient>
+  </defs>
+  <rect width="840" height="520" rx="32" fill="url(#sky)"/>
+  <ellipse cx="420" cy="380" rx="380" ry="120" fill="#111827" opacity="0.85"/>
+  <path d="M60 360 C160 300 240 340 320 280 C380 230 440 240 500 270 C560 300 620 280 700 240 C760 210 800 240 820 260" fill="#1F2937"/>
+  <circle cx="200" cy="220" r="26" fill="#FCD34D" stroke="#FBBF24" stroke-width="6"/>
+  <g fill="#F472B6" opacity="0.9">
+    <path d="M140 200 C170 140 210 140 240 200 C200 190 180 210 140 200Z"/>
+    <circle cx="190" cy="180" r="10"/>
+  </g>
+  <g fill="#C084FC" opacity="0.85">
+    <path d="M420 210 C445 150 485 150 510 210 C475 200 455 220 420 210Z"/>
+    <circle cx="470" cy="190" r="10"/>
+  </g>
+  <g fill="#38BDF8" opacity="0.9">
+    <path d="M620 190 C650 130 690 130 720 190 C685 180 665 200 620 190Z"/>
+    <circle cx="670" cy="170" r="10"/>
+  </g>
+  <text x="120" y="450" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">Cappadocia · Dawn</text>
+  <text x="120" y="480" fill="#E5E7EB" font-family="Inter, Arial, sans-serif" font-size="16">Basalt valleys, hot-air balloons, and sunrise gradients.</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg width="840" height="520" viewBox="0 0 840 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="840" height="520" rx="32" fill="#0F172A"/>
+  <rect x="34" y="42" width="772" height="436" rx="24" fill="#0B1220" stroke="#1F2937" stroke-width="2"/>
+  <text x="72" y="102" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Studio Handoff</text>
+  <rect x="72" y="132" width="696" height="44" rx="12" fill="#111827" stroke="#1F2937" stroke-width="2"/>
+  <text x="92" y="160" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="14">specs/design-system.md  ·  specs/checkout.tr.md</text>
+  <rect x="92" y="196" width="656" height="248" rx="16" fill="#111827" stroke="#1F2937" stroke-width="2"/>
+  <rect x="120" y="224" width="232" height="180" rx="14" fill="#0EA5E9" opacity="0.12" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="360" y="224" width="228" height="180" rx="14" fill="#22C55E" opacity="0.1" stroke="#34D399" stroke-width="2"/>
+  <rect x="596" y="224" width="128" height="180" rx="14" fill="#F59E0B" opacity="0.14" stroke="#FACC15" stroke-width="2"/>
+  <text x="140" y="250" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600">Design notes (.md)</text>
+  <text x="380" y="250" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600">Dev checklist</text>
+  <text x="612" y="250" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600">Assets</text>
+  <text x="140" y="278" fill="#BAE6FD" font-family="Inter, Arial, sans-serif" font-size="13">States, spacing, tokens</text>
+  <text x="380" y="278" fill="#BBF7D0" font-family="Inter, Arial, sans-serif" font-size="13">Lint, perf, a11y</text>
+  <text x="612" y="278" fill="#FEF3C7" font-family="Inter, Arial, sans-serif" font-size="13">/uploads/sprites.svg</text>
+  <text x="100" y="458" fill="#E5E7EB" font-family="Inter, Arial, sans-serif" font-size="16">Markdown specs + asset bundle in one lightweight handoff.</text>
+</svg>

@@ -20,7 +20,7 @@ export default function ProjectDetail() {
   if (isLoading) {
     return (
       <div className="min-h-screen">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
+        <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-12 py-12">
           <div className="max-w-2xl mx-auto">
             <Skeleton className="h-10 w-32 mb-8" />
             <Skeleton className="h-12 w-full mb-4" />
@@ -39,9 +39,9 @@ export default function ProjectDetail() {
   if (!project) {
     return (
       <div className="min-h-screen">
-        <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
+        <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-12 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-3xl font-semibold mb-4" data-testid="text-not-found">
+            <h1 className="text-2xl font-semibold mb-4" data-testid="text-not-found">
               {t("Project not found", "Proje bulunamadı")}
             </h1>
             <Link href="/projects">
@@ -62,24 +62,17 @@ export default function ProjectDetail() {
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto px-4 md:px-8 lg:px-12 py-12">
+      <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-12 py-12">
         <div className="max-w-2xl mx-auto">
-          <Link href="/projects">
-            <Button variant="ghost" className="mb-8 -ml-4" data-testid="button-back">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("All projects", "Tüm projeler")}
-            </Button>
-          </Link>
-
           <article>
             <h1
-              className="text-3xl md:text-5xl font-semibold mb-4 leading-tight"
+              className="text-2xl md:text-3xl font-semibold mb-4 leading-tight"
               data-testid="text-project-title"
             >
               {title}
             </h1>
 
-            <p className="text-lg text-muted-foreground mb-6">{description}</p>
+            <p className="text-base md:text-lg text-muted-foreground mb-6">{description}</p>
 
             {project.projectUrl && (
               <div className="mb-8">
@@ -107,7 +100,7 @@ export default function ProjectDetail() {
             </div>
 
             <div className="border-t pt-8" data-testid="content-project">
-              <MarkdownRenderer content={content} />
+              <MarkdownRenderer content={content} enableFrames={false} />
             </div>
           </article>
         </div>
