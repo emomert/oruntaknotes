@@ -188,7 +188,7 @@
   }
 
   .md-photo-frame img {
-    @apply block w-full h-auto object-cover rounded-md;
+    @apply block w-full h-auto object-cover rounded-md m-0;
     box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
   }
 

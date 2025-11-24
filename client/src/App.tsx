@@ -1,4 +1,5 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
+import { AnimatePresence, motion } from "framer-motion";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -18,21 +19,33 @@ import BlogIndex from "@/pages/BlogIndex";
 import NotFound from "@/pages/not-found";
 
 function Router() {
+  const [location] = useLocation();
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-1">
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/blog" component={BlogIndex} />
-          <Route path="/blog/:slug" component={BlogPost} />
-          <Route path="/projects" component={Projects} />
-          <Route path="/projects/:slug" component={ProjectDetail} />
-          <Route path="/photography" component={Photography} />
-          <Route path="/photography/:id" component={PhotoDetail} />
-          <Route path="/about" component={About} />
-          <Route component={NotFound} />
-        </Switch>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Switch location={location}>
+              <Route path="/" component={Home} />
+              <Route path="/blog" component={BlogIndex} />
+              <Route path="/blog/:slug" component={BlogPost} />
+              <Route path="/projects" component={Projects} />
+              <Route path="/projects/:slug" component={ProjectDetail} />
+              <Route path="/photography" component={Photography} />
+              <Route path="/photography/:id" component={PhotoDetail} />
+              <Route path="/about" component={About} />
+              <Route component={NotFound} />
+            </Switch>
+          </motion.div>
+        </AnimatePresence>
       </main>
       <Footer />
     </div>
