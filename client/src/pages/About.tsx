@@ -16,8 +16,8 @@ export default function About() {
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
               {t(
-                "I write bilingual notes, ship small products, and document field trips with a camera. This space is where the drafts, projects, and photos live together.",
-                "Çift dilli notlar yazıyor, küçük ürünler çıkarıyor ve gezileri kamerayla belgeliyorum. Taslaklar, projeler ve fotoğraflar bu alanda bir arada."
+                "Hello, I’m Mert Oruntak. I graduated from Boğaziçi University with a degree in Economics in 2025. Alongside my economics education, I have been working as a graphic designer at an international company for over four years. Apart from that, I enjoy taking photographs and pursuing my own dreams. On this website, you can find many things about my life and my work. Feel free to read the blog posts I’ve shared or take a look at the photos I’ve taken.",
+                "Merhaba, ben Mert Oruntak. Boğaziçi Üniversitesi İktisat bölümünden 2025 yılında mezun oldum. İktisat eğitimimin yanı sıra 4 seneden uzun bir süredir uluslararası bir şirkette grafik tasarımcı olarak çalışmaktayım. Bunların haricinde fotoğraf çekmeyi ve kendi hayallerimin peşinde koşmayı severim. Bu sitede hayatım ve çalışmalırım hakkında bir çok içerik bulabilirsin. İstersen paylaştığım blog postlarını oku, istersen de çektiğim fotoğraflara göz at."
               )}
             </p>
           </div>
@@ -25,26 +25,20 @@ export default function About() {
           <Card>
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-semibold">
-                {t("What you'll find here", "Burada neler bulacaksın")}
+                {t("What you'll find in this site?", "Bu sitede neler bulacaksın?")}
               </h2>
               <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
-                <li>{t("Long-form notes in Turkish and English.", "Türkçe ve İngilizce uzun notlar.")}</li>
-                <li>{t("Project breakdowns with markdown specs and assets.", "Markdown spesifikasyonları ve varlıklarıyla proje özetleri.")}</li>
-                <li>{t("Photo stories grouped by occasion.", "Etkinliklere göre gruplanmış fotoğraf hikayeleri.")}</li>
+                <li>{t("Blog posts in Turkish and English.", "Türkçe ve İngilizce kaleme aldığım blog postları.")}</li>
+                <li>{t("The projects I have completed so far and the ones I am currently working on.", "Bugüne kadar tamamladığım ve devam etmekte olduğum projeler.")}</li>
+                <li>{t("The photos I have taken as an amateur photographer.", "Amatör bir fotoğrafçı olarak çektiğim fotoğraflar.")}</li>
               </ul>
-              <div className="flex gap-2 flex-wrap">
-                <Badge variant="secondary">Markdown</Badge>
-                <Badge variant="secondary">Bilingual</Badge>
-                <Badge variant="secondary">React</Badge>
-                <Badge variant="secondary">Field Notes</Badge>
-              </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-semibold">
-                {t("Resume / CV", "CV / Özgeçmiş")}
+                {t("CV / Resume", "CV / Özgeçmiş")}
               </h2>
               <p className="text-muted-foreground">
                 {t(
@@ -70,12 +64,12 @@ export default function About() {
           <Card>
             <CardContent className="p-6 space-y-3">
               <h2 className="text-lg font-semibold">
-                {t("Now", "Şu an")}
+                {t("What am I doing right now?", "Şu anda ne yapıyorum?")}
               </h2>
               <p className="text-muted-foreground">
                 {t(
-                  "Exploring ways to keep writing, projects, and photography tightly linked without losing momentum.",
-                  "Yazı, proje ve fotoğraf akışını koparmadan nasıl sıkı tutabileceğimi araştırıyorum."
+                  "As a recent graduate, I am currently job searching and working on various personal-scale projects during this period.",
+                  "Yeni bir mezun olarak iş aramakta ve bu süre zarfında kişisel çaplı çeşitli projeler ile uğraşmaktayım."
                 )}
               </p>
             </CardContent>

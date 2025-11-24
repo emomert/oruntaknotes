@@ -20,7 +20,7 @@ export default function BlogIndex() {
             {t("All Posts", "Tüm Yazılar")}
           </h1>
           <p className="text-muted-foreground mb-12">
-            {t("Every note and story, in both languages.", "Tüm notlar ve hikayeler, iki dilde.")}
+            {t("ou can find my writings below — mostly about life, occasionally about economics, and generally about anything that inspires me.", "Çoğunlukla hayat, ara sıra iktisat ve genel olarak ise her konuda yazdığım yazılara aşağıdan ulaşabilirsin.")}
           </p>
 
           {isLoading && (

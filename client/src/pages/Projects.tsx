@@ -92,7 +92,7 @@ export default function Projects() {
                       >
                         <Button variant="outline" size="sm">
                           <ExternalLink className="h-4 w-4 mr-2" />
-                          {t("Visit Site", "Siteyi Ziyaret Et")}
+                          {t("Visit Site/GitHub", "Site/GitHub Linki")}
                         </Button>
                       </a>
                     )}

@@ -61,6 +61,7 @@ export default function BlogPostPage() {
   }
 
   const title = language === "tr" ? post.titleTr : post.titleEn;
+  const excerpt = language === "tr" ? post.excerptTr : post.excerptEn;
   const content = language === "tr" ? post.contentTr : post.contentEn;
   const tags = language === "tr" ? post.tagsTr ?? post.tags : post.tags;
 
@@ -71,11 +72,12 @@ export default function BlogPostPage() {
 
           <article>
             <h1
-              className="text-2xl md:text-3xl font-semibold mb-4 leading-tight"
+              className="text-2xl md:text-3xl font-semibold mb-2 leading-tight"
               data-testid="text-post-title"
             >
               {title}
             </h1>
+            {excerpt && <p className="text-base leading-relaxed italic text-muted-foreground mb-4">{excerpt}</p>}
 
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8 pb-8 border-b">
               <div className="flex items-center gap-1.5">

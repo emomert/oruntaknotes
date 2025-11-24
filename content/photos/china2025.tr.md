@@ -4,43 +4,82 @@ caption: Çin Halk Cumhuriyeti'nde geçirdiğim bir ayda çektiğim kareler.
 imageUrl: /uploads/china1.jpg
 date: 2025-02-15
 ---
+![Burası Kaçta Kapanıyor Acaba](/uploads/china1.jpg)
 
-![Şangay'da Guyi Bahçesi'nden sakinleştirici bir manzara.](/uploads/china1.jpg)
+Şangay'da uğradığım en güzel mekanlardan biri olan Guyi Bahçesi'nden bir fotoğraf.
 
-![Chenshan Botanik Parkı'nda Windows arka planı. Arkadaki kuleye de tırmanabiliyorsunuz.](/uploads/china2.jpg)
+![Wowzı](/uploads/china2.jpg)
 
-![Bankları ve parkları seviyorum.](/uploads/china3.jpg)
+Chenshan Botanik Parkı'nda Windows arka planı. Arkadaki kuleye de tırmanabiliyorsunuz.
 
-![Geleneksel Şangay The Bund manzarası.](/uploads/china4.jpg)
+![上海的最喜欢](/uploads/china3.jpg)
 
-![Çin Mimarisindeki geleneksel ay kapısı, her yerde karşınıza çıkabilir.](/uploads/china5.jpg)
+Bankları ve parkları seviyorum.
 
-![Tianzifang'ta karşıma çıkan bir afiş.](/uploads/china6.jpg)
+![外滩](/uploads/china4.jpg)
 
-![Çin ve Komünizm, çözülemeyen çelişki ve Karl Marx.](/uploads/china7.jpg)
+Geleneksel Şangay The Bund manzarası.
 
-![Gene bir akşamüstü ve yaşamın içinden bir kare.](/uploads/china8.jpg)
+![Cennetin Krallığı](/uploads/china5.jpg)
 
-![Luxun Park'ta yaşanmış hikayelerden bir an.](/uploads/china9.jpg)
+Çin Mimarisindeki geleneksel ay kapısı, her yerde karşınıza çıkabilir.
 
-![Evet bu ülkede gerçekten o kadar fazla insan yaşıyor.](/uploads/china10.jpg)
+![Biuuu](/uploads/china6.jpg)
 
-![Ay keki yerken önümüzde duran bir kadın.](/uploads/china11.jpg)
+Tianzifang'ta karşıma çıkan bir afiş.
 
-![Çok parlak çıksa da hoşuma giden bir fotoğraf.](/uploads/china12.jpg)
+![Karl Marx Alle](/uploads/china7.jpg)
 
-![Bisiklet sürmek gerçekten çok kolay ve zevkliydi.](/uploads/china13.jpg)
+Çin ve Komünizm, çözülemeyen çelişki ve Karl Marx.
 
-![Şangay'da 2. günümde çektiğim bir fotoğraf.](/uploads/china14.jpg)
+![Güneşin Vurduğu Saatler](/uploads/china8.jpg)
 
-![İklim sağ olsun, her an duş alabilirsiniz.](/uploads/china15.jpg)
+Gene bir akşamüstü ve yaşamın içinden bir kare.
 
-![Hangzhou'da bir kurye.](/uploads/china16.jpg)
+![İşte Aradığım Kare](/uploads/china9.jpg)
 
-![Hangzhou'da rastgeldiğimiz terk edilmiş bir tapınak.](/uploads/china17.jpg)
+Luxun Park'ta yaşanmış hikayelerden bir an.]
 
-![Ne kadar Sinan yazsa da o bildiğimiz Sinan değil.](/uploads/china18.jpg)
+![Electric City](/uploads/china10.jpg)
 
-![Şu ana kadar yakaladığım en güzel karelerden. Bu kadar insan varken zor bir anda çekebildim.](/uploads/china19.jpg)
+Luxun Park'ta yaşanmış hikayelerden bir an.]
 
-![Kötü olsa da anlamı olduğunu düşündüğüm bir fotoğraf.](/uploads/china20.jpg)
+![Ay Keki Güzeldi Ama](/uploads/china11.jpg)
+
+Ay keki yerken önümüzde duran bir kadın.
+
+![Biraz Daha Az Enstantane](/uploads/china12.jpg)
+
+Çok parlak çıksa da hoşuma giden bir fotoğraf.
+
+![Bisiklete Giderken](/uploads/china13.jpg)
+
+Bisiklet sürmek gerçekten çok kolay ve zevkliydi.
+
+![Bisikletimi Düşürdüm](/uploads/china14.jpg)
+
+Şangay'da 2. günümde çektiğim bir fotoğraf.
+
+![Şangay'da Tayfun Var](/uploads/china15.jpg)
+
+İklim sağ olsun, her an duş alabilirsiniz.
+
+![Kuryeler Hükümranlığı](/uploads/china16.jpg)
+
+Hangzhou'da bir kurye.
+
+![Çay Bahçelerinde Hiking](/uploads/china17.jpg)
+
+Hangzhou'da rastgeldiğimiz terk edilmiş bir tapınak.
+
+![Sinan LU](/uploads/china18.jpg)
+
+Ne kadar Sinan yazsa da o bildiğimiz Sinan değil.
+
+![Tek Başıma](/uploads/china19.jpg)
+
+Şu ana kadar yakaladığım en güzel karelerden. Bu kadar insan varken zor bir anda çekebildim.
+
+![Yaşamak](/uploads/china20.jpg)
+
+Kötü olsa da anlamı olduğunu düşündüğüm bir fotoğraf.

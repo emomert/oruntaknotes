@@ -49,6 +49,7 @@ export default function PhotoDetail() {
     );
   }
 
+  const title = language === "tr" ? photo.titleTr : photo.titleEn;
   const caption = language === "tr" ? photo.captionTr : photo.captionEn;
   const content = language === "tr" ? photo.contentTr : photo.contentEn;
   const date = new Date(photo.takenAt).toLocaleDateString(
@@ -61,11 +62,12 @@ export default function PhotoDetail() {
       <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-10 py-12">
         <div className="max-w-2xl mx-auto">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <h1 className="text-2xl md:text-3xl font-semibold mb-2">{title}</h1>
+            {caption && <p className="text-base leading-relaxed italic text-muted-foreground mb-4">{caption}</p>}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
               <Calendar className="h-4 w-4" />
               <span>{date}</span>
             </div>
-            {caption && <p className="text-base leading-relaxed italic text-muted-foreground">{caption}</p>}
             <div className="border-t pt-6">
               <MarkdownRenderer content={content} enableFrames />
             </div>

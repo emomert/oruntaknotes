@@ -1,5 +1,7 @@
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import exifr from "exifr";
+import { Camera, Aperture, Timer, Zap, Maximize2 } from "lucide-react";
 
 interface MarkdownRendererProps {
   content: string;
@@ -9,7 +11,19 @@ interface MarkdownRendererProps {
 
 export function MarkdownRenderer({ content, className = "", enableFrames = true }: MarkdownRendererProps) {
   const [, setLocation] = useLocation();
-  const [lightbox, setLightbox] = useState<{ src: string; alt?: string } | null>(null);
+  const [lightbox, setLightbox] = useState<{ src: string; alt?: string; exif?: any } | null>(null);
+
+  useEffect(() => {
+    if (lightbox?.src && !lightbox.exif) {
+      exifr.parse(lightbox.src).then((exif) => {
+        if (exif) {
+          setLightbox((prev) => (prev ? { ...prev, exif } : null));
+        }
+      }).catch(() => {
+        // Ignore errors or no EXIF data
+      });
+    }
+  }, [lightbox?.src]);
 
   const processedContent = useMemo(() => {
     let processed = content;
@@ -63,11 +77,11 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
 
         sectionHtml = sectionHtml.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-primary pl-4 italic text-muted-foreground my-4">$1</blockquote>');
 
-        sectionHtml = sectionHtml.replace(/^\- (.+)$/gm, '<li class="ml-4">$1</li>');
-        sectionHtml = sectionHtml.replace(/(<li class="ml-4">[\s\S]+<\/li>)/g, '<ul class="list-disc my-4 space-y-2">$1</ul>');
+        sectionHtml = sectionHtml.replace(/^\- (.+)$/gm, '<li class="ul-li">$1</li>');
+        sectionHtml = sectionHtml.replace(/((?:<li class="ul-li">.*?<\/li>\n*)+)/g, '<ul class="list-disc list-outside pl-6 my-4 space-y-2">$1</ul>');
 
-        sectionHtml = sectionHtml.replace(/^\d+\. (.+)$/gm, '<li class="ml-4">$1</li>');
-        sectionHtml = sectionHtml.replace(/(<li class="ml-4">[\s\S]+<\/li>)/g, '<ol class="list-decimal my-4 space-y-2">$1</ol>');
+        sectionHtml = sectionHtml.replace(/^\d+\. (.+)$/gm, '<li class="ol-li">$1</li>');
+        sectionHtml = sectionHtml.replace(/((?:<li class="ol-li">.*?<\/li>\n*)+)/g, '<ol class="list-decimal list-outside pl-6 my-4 space-y-2">$1</ol>');
 
         sectionHtml = sectionHtml.replace(/\n\n/g, '</p><p class="mb-4 leading-[1.7]">');
 
@@ -82,7 +96,7 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    
+
     if (target.tagName === "A" && target.classList.contains("wiki-link")) {
       e.preventDefault();
       const slug = target.getAttribute('data-wiki-slug');
@@ -118,7 +132,7 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
           <img
             src={lightbox.src}
             alt={lightbox.alt || ""}
-            className="max-w-full max-h-full object-contain shadow-2xl md-lightbox-image"
+            className="max-w-full max-h-full object-contain shadow-2xl md-lightbox-image peer"
             onClick={(e) => e.stopPropagation()}
           />
           <button
@@ -129,8 +143,53 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
             ×
           </button>
           {lightbox.alt && (
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded text-center max-w-[90vw] pointer-events-none">
               {lightbox.alt}
+            </div>
+          )}
+
+          {/* EXIF Data Overlay */}
+          {lightbox.exif && (
+            <div
+              className="absolute bottom-24 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:bottom-8 md:translate-x-0 bg-black/60 backdrop-blur-sm text-white p-4 rounded-lg text-sm transition-opacity duration-300 opacity-0 peer-hover:opacity-100 hover:opacity-100 cursor-pointer md:cursor-default"
+              onClick={(e) => {
+                e.stopPropagation();
+                const target = e.currentTarget;
+                target.classList.toggle('opacity-100');
+              }}
+            >
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                {lightbox.exif.Model && (
+                  <div className="flex items-center gap-2">
+                    <Camera className="w-4 h-4 text-muted-foreground" />
+                    <span>{lightbox.exif.Model}</span>
+                  </div>
+                )}
+                {lightbox.exif.FNumber && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 flex items-center justify-center font-serif italic text-muted-foreground">f</div>
+                    <span>f/{lightbox.exif.FNumber}</span>
+                  </div>
+                )}
+                {lightbox.exif.ExposureTime && (
+                  <div className="flex items-center gap-2">
+                    <Timer className="w-4 h-4 text-muted-foreground" />
+                    <span>1/{Math.round(1 / lightbox.exif.ExposureTime)}s</span>
+                  </div>
+                )}
+                {lightbox.exif.ISO && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-muted-foreground border border-muted-foreground px-0.5 rounded">ISO</span>
+                    <span>{lightbox.exif.ISO}</span>
+                  </div>
+                )}
+                {lightbox.exif.FocalLength && (
+                  <div className="flex items-center gap-2">
+                    <Maximize2 className="w-4 h-4 text-muted-foreground" />
+                    <span>{Math.round(lightbox.exif.FocalLength)}mm</span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

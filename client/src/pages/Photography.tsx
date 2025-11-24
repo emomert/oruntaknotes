@@ -28,7 +28,7 @@ export default function Photography() {
           </div>
 
           {isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Card key={i}>
                   <Skeleton className="w-full aspect-[4/3]" />
@@ -51,7 +51,7 @@ export default function Photography() {
           )}
 
           {!isLoading && photos && photos.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {photos.map((photo) => {
                 const title = language === "tr" ? photo.titleTr : photo.titleEn;
                 const caption = language === "tr" ? photo.captionTr : photo.captionEn;
@@ -67,8 +67,10 @@ export default function Photography() {
                         <img
                           src={photo.imageUrl}
                           alt={caption ?? ""}
-                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                          className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
                         />
+                        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/5 to-transparent dark:from-black/50 pointer-events-none" />
+                        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/5 to-transparent dark:from-black/50 pointer-events-none" />
                       </div>
                       <CardContent className="p-6 space-y-3">
                         <h2 className="text-lg font-semibold leading-tight">{title}</h2>

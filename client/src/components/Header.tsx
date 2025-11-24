@@ -117,7 +117,7 @@ export function Header() {
                       className="w-full justify-start text-base"
                       aria-current={isActive("/about") ? "page" : undefined}
                     >
-                      {t("About", "Hakk?nda")}
+                      {t("About", "Hakkımda")}
                     </Button>
                   </Link>
                   <Link href="/projects" data-testid="link-projects-mobile">
@@ -135,7 +135,7 @@ export function Header() {
                       className="w-full justify-start text-base"
                       aria-current={isActive("/photography") ? "page" : undefined}
                     >
-                      {t("Photo", "Foto")}
+                      {t("Photo", "Fotoğraflar")}
                     </Button>
                   </Link>
                 </div>
