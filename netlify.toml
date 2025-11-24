@@ -15,6 +15,36 @@
   status = 200
 
 [[redirects]]
+  from = "/api/blog-posts"
+  to = "/api/blog-posts.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/blog-posts/:slug"
+  to = "/api/blog-posts/:slug.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/projects"
+  to = "/api/projects.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/projects/:slug"
+  to = "/api/projects/:slug.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/photos"
+  to = "/api/photos.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/photos/:slug"
+  to = "/api/photos/:slug.json"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
