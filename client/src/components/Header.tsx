@@ -18,8 +18,8 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-12">
-        <div className="flex flex-wrap md:flex-nowrap h-auto md:h-16 items-center justify-between gap-2 sm:gap-4 py-3 md:py-0">
+      <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-10">
+        <div className="max-w-2xl mx-auto flex flex-wrap md:flex-nowrap h-auto md:h-16 items-center justify-between gap-2 sm:gap-4 py-3 md:py-0">
           <Link href="/" data-testid="link-home">
             <span className="text-xl md:text-2xl font-semibold tracking-tight hover-elevate active-elevate-2 px-2 py-1 rounded-md cursor-pointer transition-all duration-150 max-w-[50vw] truncate">
               {t("Oruntak Notes", "Oruntak Notları")}
@@ -27,17 +27,6 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-1" data-testid="nav-desktop">
-            <Link href="/" data-testid="link-home">
-              <Button
-                variant="ghost"
-                className={`relative px-4 py-2 text-base font-semibold ${isActive("/") && location === "/" ? "bg-accent" : ""}`}
-              >
-                {t("Home", "Ana Sayfa")}
-                {isActive("/") && location === "/" && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full transition-all duration-150" />
-                )}
-              </Button>
-            </Link>
             <Link href="/blog" data-testid="link-blog">
               <Button
                 variant="ghost"
@@ -93,15 +82,6 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="right" className="pt-14 px-4 pb-6 w-72 sm:w-80" aria-label="Mobile menu">
                 <div className="space-y-3">
-                  <Link href="/" data-testid="link-home-mobile">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-base"
-                      aria-current={isActive("/") && location === "/" ? "page" : undefined}
-                    >
-                      {t("Home", "Ana Sayfa")}
-                    </Button>
-                  </Link>
                   <Link href="/blog" data-testid="link-blog-mobile">
                     <Button
                       variant="ghost"

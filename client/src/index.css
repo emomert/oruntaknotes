@@ -235,14 +235,32 @@
     animation: md-lightbox-zoom 0.2s ease-out;
   }
 
+  .md-lightbox-image.closing {
+    animation: md-lightbox-zoom-out 0.2s ease-in forwards;
+  }
+
+  .md-lightbox-backdrop.closing {
+    animation: md-lightbox-fade-out 0.2s ease-in forwards;
+  }
+
   @keyframes md-lightbox-fade {
     from { opacity: 0; }
     to { opacity: 1; }
   }
 
+  @keyframes md-lightbox-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
   @keyframes md-lightbox-zoom {
     from { transform: scale(0.9); opacity: 0.7; }
     to { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes md-lightbox-zoom-out {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(0.9); opacity: 0; }
   }
 }
 

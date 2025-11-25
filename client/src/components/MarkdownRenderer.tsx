@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import exifr from "exifr";
-import { Camera, Aperture, Timer, Zap, Maximize2 } from "lucide-react";
+import { Camera, Aperture, Timer, Zap, Maximize2, X } from "lucide-react";
 
 interface MarkdownRendererProps {
   content: string;
@@ -12,6 +12,17 @@ interface MarkdownRendererProps {
 export function MarkdownRenderer({ content, className = "", enableFrames = true }: MarkdownRendererProps) {
   const [, setLocation] = useLocation();
   const [lightbox, setLightbox] = useState<{ src: string; alt?: string; exif?: any } | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [showExif, setShowExif] = useState(false);
+
+  const closeLightbox = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setLightbox(null);
+      setIsClosing(false);
+      setShowExif(false);
+    }, 200); // Match animation duration
+  }, []);
 
   useEffect(() => {
     if (lightbox?.src && !lightbox.exif) {
@@ -126,70 +137,79 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
       />
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 md-lightbox-backdrop"
-          onClick={() => setLightbox(null)}
+          className={`fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 md-lightbox-backdrop ${isClosing ? 'closing' : ''}`}
+          onClick={closeLightbox}
         >
-          <img
-            src={lightbox.src}
-            alt={lightbox.alt || ""}
-            className="max-w-full max-h-full object-contain shadow-2xl md-lightbox-image peer"
-            onClick={(e) => e.stopPropagation()}
-          />
-          <button
-            className="absolute top-4 right-4 text-white text-2xl"
-            aria-label="Close"
-            onClick={() => setLightbox(null)}
-          >
-            ×
-          </button>
+          <div className="relative flex justify-center items-center">
+            <img
+              src={lightbox.src}
+              alt={lightbox.alt || ""}
+              className={`max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] object-contain shadow-2xl md-lightbox-image peer ${isClosing ? 'closing' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowExif(!showExif);
+              }}
+            />
+            <button
+              className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 transition-colors z-10"
+              aria-label="Close"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeLightbox();
+              }}
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* EXIF Data Overlay */}
+            {lightbox.exif && (
+              <div
+                className={`absolute bottom-4 left-1/2 -translate-x-1/2 md:left-auto md:right-4 md:bottom-4 md:translate-x-0 bg-black/60 backdrop-blur-sm text-white p-4 rounded-lg text-sm transition-opacity duration-300 ${showExif ? 'opacity-100' : 'opacity-0 md:peer-hover:opacity-100 md:hover:opacity-100'} cursor-pointer md:cursor-default`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const target = e.currentTarget;
+                  target.classList.toggle('opacity-100');
+                }}
+              >
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                  {lightbox.exif.Model && (
+                    <div className="flex items-center gap-2">
+                      <Camera className="w-4 h-4 text-muted-foreground" />
+                      <span>{lightbox.exif.Model}</span>
+                    </div>
+                  )}
+                  {lightbox.exif.FNumber && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 flex items-center justify-center font-serif italic text-muted-foreground">f</div>
+                      <span>f/{lightbox.exif.FNumber}</span>
+                    </div>
+                  )}
+                  {lightbox.exif.ExposureTime && (
+                    <div className="flex items-center gap-2">
+                      <Timer className="w-4 h-4 text-muted-foreground" />
+                      <span>1/{Math.round(1 / lightbox.exif.ExposureTime)}s</span>
+                    </div>
+                  )}
+                  {lightbox.exif.ISO && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-muted-foreground border border-muted-foreground px-0.5 rounded">ISO</span>
+                      <span>{lightbox.exif.ISO}</span>
+                    </div>
+                  )}
+                  {lightbox.exif.FocalLength && (
+                    <div className="flex items-center gap-2">
+                      <Maximize2 className="w-4 h-4 text-muted-foreground" />
+                      <span>{Math.round(lightbox.exif.FocalLength)}mm</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           {lightbox.alt && (
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded text-center max-w-[90vw] pointer-events-none">
               {lightbox.alt}
-            </div>
-          )}
-
-          {/* EXIF Data Overlay */}
-          {lightbox.exif && (
-            <div
-              className="absolute bottom-24 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:bottom-8 md:translate-x-0 bg-black/60 backdrop-blur-sm text-white p-4 rounded-lg text-sm transition-opacity duration-300 opacity-0 peer-hover:opacity-100 hover:opacity-100 cursor-pointer md:cursor-default"
-              onClick={(e) => {
-                e.stopPropagation();
-                const target = e.currentTarget;
-                target.classList.toggle('opacity-100');
-              }}
-            >
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-                {lightbox.exif.Model && (
-                  <div className="flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-muted-foreground" />
-                    <span>{lightbox.exif.Model}</span>
-                  </div>
-                )}
-                {lightbox.exif.FNumber && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 flex items-center justify-center font-serif italic text-muted-foreground">f</div>
-                    <span>f/{lightbox.exif.FNumber}</span>
-                  </div>
-                )}
-                {lightbox.exif.ExposureTime && (
-                  <div className="flex items-center gap-2">
-                    <Timer className="w-4 h-4 text-muted-foreground" />
-                    <span>1/{Math.round(1 / lightbox.exif.ExposureTime)}s</span>
-                  </div>
-                )}
-                {lightbox.exif.ISO && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-muted-foreground border border-muted-foreground px-0.5 rounded">ISO</span>
-                    <span>{lightbox.exif.ISO}</span>
-                  </div>
-                )}
-                {lightbox.exif.FocalLength && (
-                  <div className="flex items-center gap-2">
-                    <Maximize2 className="w-4 h-4 text-muted-foreground" />
-                    <span>{Math.round(lightbox.exif.FocalLength)}mm</span>
-                  </div>
-                )}
-              </div>
             </div>
           )}
         </div>

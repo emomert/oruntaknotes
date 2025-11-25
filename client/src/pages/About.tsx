@@ -2,6 +2,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Github, Twitter, Music } from "lucide-react";
 
 export default function About() {
   const { t } = useLanguage();
@@ -32,6 +33,40 @@ export default function About() {
                 <li>{t("The projects I have completed so far and the ones I am currently working on.", "Bugüne kadar tamamladığım ve devam etmekte olduğum projeler.")}</li>
                 <li>{t("The photos I have taken as an amateur photographer.", "Amatör bir fotoğrafçı olarak çektiğim fotoğraflar.")}</li>
               </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-lg font-semibold">
+                {t("Social Media", "Sosyal Medya")}
+              </h2>
+              <p className="text-muted-foreground">
+                {t(
+                  "You can follow me on these platforms.",
+                  "Beni bu platformlardan takip edebilirsin."
+                )}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Button variant="outline" asChild>
+                  <a href="https://x.com/mert_oruntak" target="_blank" rel="noreferrer noopener">
+                    <Twitter className="mr-2 h-4 w-4" />
+                    X (Twitter)
+                  </a>
+                </Button>
+                <Button variant="outline" asChild>
+                  <a href="https://github.com/emomert" target="_blank" rel="noreferrer noopener">
+                    <Github className="mr-2 h-4 w-4" />
+                    GitHub
+                  </a>
+                </Button>
+                <Button variant="outline" asChild>
+                  <a href="https://open.spotify.com/user/emomert?si=adef422396274886" target="_blank" rel="noreferrer noopener">
+                    <Music className="mr-2 h-4 w-4" />
+                    Spotify
+                  </a>
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
