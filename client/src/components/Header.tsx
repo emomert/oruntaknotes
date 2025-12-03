@@ -22,7 +22,7 @@ export function Header() {
         <div className="max-w-2xl mx-auto flex flex-wrap md:flex-nowrap h-auto md:h-16 items-center justify-between gap-2 sm:gap-4 py-3 md:py-0">
           <Link href="/" data-testid="link-home">
             <span className="text-xl md:text-2xl font-semibold tracking-tight hover-elevate active-elevate-2 px-2 py-1 rounded-md cursor-pointer transition-all duration-150 max-w-[50vw] truncate">
-              {t("Oruntak Notes", "Oruntak Notları")}
+              {t("Mert Oruntak", "Mert Oruntak")}
             </span>
           </Link>
 

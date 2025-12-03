@@ -49,6 +49,8 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
       return `<a href="/blog/${slug}" class="wiki-link text-primary underline decoration-primary/30 hover:decoration-primary bg-primary/5 px-1 rounded transition-all duration-150" data-wiki-slug="${slug}">${linkText}</a>`;
     });
 
+    processed = convertEmbeds(processed);
+
     const sections = processed.split(/(```[\s\S]*?```)/g);
     let html = "";
 
@@ -164,14 +166,14 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
             {/* EXIF Data Overlay */}
             {lightbox.exif && (
               <div
-                className={`absolute bottom-4 left-1/2 -translate-x-1/2 md:left-auto md:right-4 md:bottom-4 md:translate-x-0 bg-black/60 backdrop-blur-sm text-white p-4 rounded-lg text-sm transition-opacity duration-300 ${showExif ? 'opacity-100' : 'opacity-0 md:peer-hover:opacity-100 md:hover:opacity-100'} cursor-pointer md:cursor-default`}
+                className={`absolute bottom-4 right-4 md:bottom-6 md:right-6 bg-black/60 backdrop-blur-sm text-white p-4 rounded-lg text-sm transition-opacity duration-300 ${showExif ? 'opacity-100' : 'opacity-0 md:peer-hover:opacity-100 md:hover:opacity-100'} cursor-pointer md:cursor-default max-w-[46vw] sm:max-w-xs md:max-w-sm`}
                 onClick={(e) => {
                   e.stopPropagation();
                   const target = e.currentTarget;
                   target.classList.toggle('opacity-100');
                 }}
               >
-                <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 auto-rows-auto">
                   {lightbox.exif.Model && (
                     <div className="flex items-center gap-2">
                       <Camera className="w-4 h-4 text-muted-foreground" />
@@ -208,7 +210,7 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
           </div>
 
           {lightbox.alt && (
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded text-center max-w-[90vw] pointer-events-none">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 md:bottom-6 bg-black/70 text-white px-4 py-2 rounded text-center max-w-[90vw] md:max-w-[70vw] lg:max-w-3xl pointer-events-none">
               {lightbox.alt}
             </div>
           )}
@@ -222,4 +224,58 @@ function escapeHtml(text: string): string {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
+}
+
+function convertEmbeds(text: string): string {
+  return text.replace(/^(https?:\/\/[^\s]+|\/uploads\/[^\s]+)\s*$/gm, (full, url) => {
+    const youtubeId = getYouTubeId(url);
+    if (youtubeId) {
+      return `<div class="md-embed md-embed-video"><iframe src="https://www.youtube.com/embed/${youtubeId}" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>`;
+    }
+
+    const twitterSrc = getTwitterEmbed(url);
+    if (twitterSrc) {
+      return `<div class="md-embed md-embed-twitter"><iframe src="${twitterSrc}" title="Twitter post" loading="lazy" allowtransparency="true"></iframe></div>`;
+    }
+
+    const spotify = getSpotifyEmbed(url);
+    if (spotify) {
+      return `<div class="md-embed md-embed-spotify"><iframe src="${spotify.src}" title="Spotify embed" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" height="${spotify.height}"></iframe></div>`;
+    }
+
+    const videoEmbed = getVideoEmbed(url);
+    if (videoEmbed) {
+      return `<div class="md-embed md-embed-video"><video src="${videoEmbed}" controls playsinline preload="metadata"></video></div>`;
+    }
+
+    return full;
+  });
+}
+
+function getYouTubeId(url: string): string | null {
+  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/i);
+  return match ? match[1] : null;
+}
+
+function getTwitterEmbed(url: string): string | null {
+  const isStatus = /^https?:\/\/(?:www\.)?(?:twitter\.com|x\.com)\/[^/]+\/status\/\d+(?:\?[^\s]*)?$/i;
+  if (!isStatus.test(url)) return null;
+  return `https://twitframe.com/show?url=${encodeURIComponent(url)}`;
+}
+
+function getSpotifyEmbed(url: string): { src: string; height: number } | null {
+  const match = url.match(/^https?:\/\/open\.spotify\.com\/(track|album|playlist|episode|show)\/([A-Za-z0-9]+)(?:\?[^\s]*)?/i);
+  if (!match) return null;
+  const [, type, id] = match;
+  const height = type === "track" ? 152 : 352;
+  return {
+    src: `https://open.spotify.com/embed/${type}/${id}`,
+    height,
+  };
+}
+
+function getVideoEmbed(url: string): string | null {
+  const match = url.match(/\.(mp4|webm|ogg|mov|m4v)(\?[^\s]*)?$/i);
+  if (!match) return null;
+  return url;
 }

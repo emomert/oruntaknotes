@@ -21,7 +21,7 @@ export default function Home() {
         <div className="max-w-2xl mx-auto space-y-10">
           <div className="space-y-4">
             <h1 className="text-2xl md:text-3xl font-semibold" data-testid="text-page-title">
-              {t("Oruntak Notes", "Oruntak Notları")}
+              {t("Mert Oruntak", "Mert Oruntak")}
             </h1>
             <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl">
               {t(
