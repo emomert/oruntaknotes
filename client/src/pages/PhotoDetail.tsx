@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { FadeIn, ScrollAnimate } from "@/hooks/useScrollAnimation";
 import type { Photo } from "@shared/schema";
 
 export default function PhotoDetail() {
@@ -62,15 +63,23 @@ export default function PhotoDetail() {
       <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-10 py-12">
         <div className="max-w-2xl mx-auto">
           <div className="space-y-3">
-            <h1 className="text-2xl md:text-3xl font-semibold mb-2">{title}</h1>
-            {caption && <p className="text-base leading-relaxed italic text-muted-foreground mb-4">{caption}</p>}
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-              <Calendar className="h-4 w-4" />
-              <span>{date}</span>
-            </div>
-            <div className="border-t pt-6">
-              <MarkdownRenderer content={content} enableFrames />
-            </div>
+            <FadeIn delay={0} duration={500} direction="up">
+              <h1 className="text-2xl md:text-3xl font-semibold mb-2">{title}</h1>
+            </FadeIn>
+            <FadeIn delay={100} duration={500} direction="up">
+              {caption && <p className="text-base leading-relaxed italic text-muted-foreground mb-4">{caption}</p>}
+            </FadeIn>
+            <FadeIn delay={150} duration={500} direction="up">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+                <Calendar className="h-4 w-4" />
+                <span>{date}</span>
+              </div>
+            </FadeIn>
+            <FadeIn delay={200} duration={500} direction="up">
+              <div className="border-t pt-6">
+                <MarkdownRenderer content={content} enableFrames />
+              </div>
+            </FadeIn>
           </div>
         </div>
       </div>

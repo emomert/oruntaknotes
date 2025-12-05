@@ -40,6 +40,13 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
     let processed = content;
     processed = processed.replace(/\r\n/g, "\n");
 
+    // Extract footnote definitions first (format: [^label]: content)
+    const footnotes: Map<string, string> = new Map();
+    processed = processed.replace(/^\[\^([^\]]+)\]:\s*(.+)$/gm, (_, label, footnoteContent) => {
+      footnotes.set(label, footnoteContent);
+      return ""; // Remove definition from main content
+    });
+
     processed = processed.replace(/!\[\[([^\]]+)\]\]/g, (_, filename) => {
       return `![${filename}](/api/images/${encodeURIComponent(filename)})`;
     });
@@ -47,6 +54,16 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
     processed = processed.replace(/\[\[([^\]]+)\]\]/g, (_, linkText) => {
       const slug = linkText.toLowerCase().replace(/\s+/g, "-");
       return `<a href="/blog/${slug}" class="wiki-link text-primary underline decoration-primary/30 hover:decoration-primary bg-primary/5 px-1 rounded transition-all duration-150" data-wiki-slug="${slug}">${linkText}</a>`;
+    });
+
+    // Replace footnote references with interactive superscripts
+    processed = processed.replace(/\[\^([^\]]+)\]/g, (_, label) => {
+      const footnoteContent = footnotes.get(label);
+      if (footnoteContent) {
+        const escapedContent = escapeHtml(footnoteContent).replace(/"/g, '&quot;');
+        return `<sup class="footnote-ref" data-footnote-label="${label}" data-footnote-content="${escapedContent}"><a href="#footnote-${label}" class="footnote-link" data-footnote-label="${label}">${label}</a></sup>`;
+      }
+      return `<sup class="footnote-ref-missing">[^${label}]</sup>`;
     });
 
     processed = convertEmbeds(processed);
@@ -59,14 +76,30 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
         const codeMatch = section.match(/```(\w+)?\n([\s\S]*?)```/);
         if (codeMatch) {
           const [, lang, code] = codeMatch;
-          html += `<pre class="bg-muted p-4 rounded-md overflow-x-auto my-4"><code class="text-sm">${escapeHtml(code.trim())}</code></pre>`;
+          const escapedCode = escapeHtml(code.trim());
+          const codeForCopy = escapedCode.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+          html += `<div class="code-block-wrapper relative my-4">
+            <button class="copy-code-btn absolute top-2 right-2 px-2 py-1 text-xs bg-muted-foreground/20 hover:bg-muted-foreground/30 text-muted-foreground rounded transition-colors" data-code="${codeForCopy.replace(/"/g, '&quot;')}">
+              Copy
+            </button>
+            <pre class="bg-muted p-4 pt-10 rounded-md overflow-x-auto"><code class="text-sm">${escapedCode}</code></pre>
+          </div>`;
         }
       } else {
         let sectionHtml = section;
 
-        sectionHtml = sectionHtml.replace(/^### (.+)$/gm, '<h3 class="text-lg md:text-xl font-semibold mt-6 mb-3 leading-snug">$1</h3>');
-        sectionHtml = sectionHtml.replace(/^## (.+)$/gm, '<h2 class="text-xl md:text-2xl font-semibold mt-8 mb-4 leading-tight">$1</h2>');
-        sectionHtml = sectionHtml.replace(/^# (.+)$/gm, '<h1 class="text-2xl md:text-3xl font-semibold mt-10 mb-5 leading-tight">$1</h1>');
+        sectionHtml = sectionHtml.replace(/^### (.+)$/gm, (_, text) => {
+          const id = text.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
+          return `<h3 id="${id}" class="text-lg md:text-xl font-semibold mt-6 mb-3 leading-snug scroll-mt-20">${text}</h3>`;
+        });
+        sectionHtml = sectionHtml.replace(/^## (.+)$/gm, (_, text) => {
+          const id = text.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
+          return `<h2 id="${id}" class="text-xl md:text-2xl font-semibold mt-8 mb-4 leading-tight scroll-mt-20">${text}</h2>`;
+        });
+        sectionHtml = sectionHtml.replace(/^# (.+)$/gm, (_, text) => {
+          const id = text.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
+          return `<h1 id="${id}" class="text-2xl md:text-3xl font-semibold mt-10 mb-5 leading-tight scroll-mt-20">${text}</h1>`;
+        });
 
         sectionHtml = sectionHtml.replace(
           /!\[([^\]]*)\]\(([^)]+)\)/g,
@@ -104,6 +137,16 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
 
     html = `<div class="prose-content"><p class="mb-4 leading-[1.7]">${html}</p></div>`;
 
+    // Add footnotes section at the bottom if there are any
+    if (footnotes.size > 0) {
+      let footnotesHtml = '<section class="footnotes-section" aria-label="Footnotes"><hr class="footnotes-divider" /><ol class="footnotes-list">';
+      footnotes.forEach((footnoteContent, label) => {
+        footnotesHtml += `<li id="footnote-${label}" class="footnote-item"><span class="footnote-label">${label}.</span> ${escapeHtml(footnoteContent)} <a href="#footnote-ref-${label}" class="footnote-backref" aria-label="Back to reference">↩</a></li>`;
+      });
+      footnotesHtml += '</ol></section>';
+      html += footnotesHtml;
+    }
+
     return html;
   }, [content]);
 
@@ -127,6 +170,27 @@ export function MarkdownRenderer({ content, className = "", enableFrames = true 
         onClick={(e) => {
           handleClick(e);
           const target = e.target as HTMLElement;
+
+          // Handle copy code button click
+          if (target.classList.contains("copy-code-btn")) {
+            const code = target.getAttribute("data-code") || "";
+            navigator.clipboard.writeText(code).then(() => {
+              const originalText = target.textContent;
+              target.textContent = "Copied!";
+              target.classList.add("bg-green-500/30");
+              setTimeout(() => {
+                target.textContent = originalText;
+                target.classList.remove("bg-green-500/30");
+              }, 2000);
+            }).catch(() => {
+              target.textContent = "Failed";
+              setTimeout(() => {
+                target.textContent = "Copy";
+              }, 2000);
+            });
+            return;
+          }
+
           const figure = target.closest(".md-photo-frame") as HTMLElement | null;
           if (figure) {
             const src = figure.getAttribute("data-img-src") || "";

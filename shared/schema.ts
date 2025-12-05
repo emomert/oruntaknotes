@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -16,6 +16,7 @@ export const blogPosts = pgTable("blog_posts", {
   readTimeMinutes: text("read_time_minutes").notNull(),
   tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
   tagsTr: text("tags_tr").array().notNull().default(sql`ARRAY[]::text[]`),
+  isDraft: boolean("is_draft").notNull().default(false),
   publishedAt: timestamp("published_at").notNull(),
 });
 
@@ -29,6 +30,7 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts)
     readTimeMinutes: z.string().optional(),
     tags: z.array(z.string()).default([]),
     tagsTr: z.array(z.string()).default([]),
+    isDraft: z.boolean().optional().default(false),
   });
 
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;

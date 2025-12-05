@@ -99,6 +99,7 @@ export class MemStorage implements IStorage {
       const publishedAt = this.parseDate(en.meta.publishedAt ?? tr.meta.publishedAt);
       const tags = this.parseTags(en.meta.tags ?? en.meta.tagsEn);
       const tagsTr = this.parseTags(tr.meta.tags ?? tr.meta.tagsTr ?? en.meta.tagsTr ?? tags);
+      const isDraft = Boolean(en.meta.draft ?? en.meta.isDraft ?? tr.meta.draft ?? tr.meta.isDraft ?? false);
 
       const record: BlogPost = {
         id: randomUUID(),
@@ -112,6 +113,7 @@ export class MemStorage implements IStorage {
         readTimeMinutes: readTime,
         tags,
         tagsTr,
+        isDraft,
         publishedAt,
       };
 
@@ -142,8 +144,8 @@ export class MemStorage implements IStorage {
       const publishedAt = this.parseDate(en.meta.publishedAt ?? tr.meta.publishedAt);
       const thumbnailUrl = String(
         en.meta.thumbnailUrl ??
-          tr.meta.thumbnailUrl ??
-          "/uploads/atlas-notes-thumb.svg",
+        tr.meta.thumbnailUrl ??
+        "/uploads/atlas-notes-thumb.svg",
       );
       const projectUrl = (en.meta.projectUrl ?? tr.meta.projectUrl) ?? null;
 
@@ -187,10 +189,10 @@ export class MemStorage implements IStorage {
 
       const imageUrl = String(
         en.meta.imageUrl ??
-          tr.meta.imageUrl ??
-          this.extractFirstImage(en.content) ??
-          this.extractFirstImage(tr.content) ??
-          "/uploads/winter-bosphorus.jpg",
+        tr.meta.imageUrl ??
+        this.extractFirstImage(en.content) ??
+        this.extractFirstImage(tr.content) ??
+        "/uploads/winter-bosphorus.jpg",
       );
       const publishedAt = this.parseDate(en.meta.publishedAt ?? tr.meta.publishedAt ?? en.meta.date ?? tr.meta.date);
       const takenAt = this.parseDate(
@@ -277,9 +279,10 @@ export class MemStorage implements IStorage {
   }
 
   async getAllBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values()).sort(
-      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime(),
-    );
+    // Filter out drafts for public API
+    return Array.from(this.blogPosts.values())
+      .filter((post) => !post.isDraft)
+      .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
   }
 
   async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
@@ -296,6 +299,7 @@ export class MemStorage implements IStorage {
       readTimeMinutes: readTime,
       tags: insertPost.tags ?? [],
       tagsTr: (insertPost as any).tagsTr ?? [],
+      isDraft: insertPost.isDraft ?? false,
       id,
     };
     this.blogPosts.set(id, post);

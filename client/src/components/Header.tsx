@@ -76,7 +76,7 @@ export function Header() {
           <nav className="md:hidden flex-1 flex justify-start" data-testid="nav-mobile">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" aria-label={t("Open menu", "Men?y? a?")}>
+                <Button variant="ghost" size="sm" aria-label={t("Open menu", "Menüyü aç")}>
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>

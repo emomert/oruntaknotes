@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { FadeIn, ScrollAnimate } from "@/hooks/useScrollAnimation";
 import type { Project } from "@shared/schema";
 
 export default function ProjectDetail() {
@@ -65,14 +66,18 @@ export default function ProjectDetail() {
       <div className="container mx-auto px-3 sm:px-4 md:px-8 lg:px-12 py-12">
         <div className="max-w-2xl mx-auto">
           <article>
-            <h1
-              className="text-2xl md:text-3xl font-semibold mb-4 leading-tight"
-              data-testid="text-project-title"
-            >
-              {title}
-            </h1>
+            <FadeIn delay={0} duration={500} direction="up">
+              <h1
+                className="text-2xl md:text-3xl font-semibold mb-4 leading-tight"
+                data-testid="text-project-title"
+              >
+                {title}
+              </h1>
+            </FadeIn>
 
-            <p className="text-base md:text-lg text-muted-foreground mb-6">{description}</p>
+            <FadeIn delay={100} duration={500} direction="up">
+              <p className="text-base md:text-lg text-muted-foreground mb-6">{description}</p>
+            </FadeIn>
 
             {project.projectUrl && (
               <div className="mb-8">
@@ -99,9 +104,11 @@ export default function ProjectDetail() {
               />
             </div>
 
-            <div className="border-t pt-8" data-testid="content-project">
-              <MarkdownRenderer content={content} enableFrames={false} />
-            </div>
+            <FadeIn delay={200} duration={500} direction="up">
+              <div className="border-t pt-8" data-testid="content-project">
+                <MarkdownRenderer content={content} enableFrames={false} />
+              </div>
+            </FadeIn>
           </article>
         </div>
       </div>
